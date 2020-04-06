@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react';
 import './Display.css'
+import Container from '../container/Container';
+import Button from '../button/Button';
 
 const Display = () => {
   return (
@@ -15,15 +17,18 @@ const Display = () => {
             </div>
           </div>
           <div className="password-display-icons">
-            <button className="copy-btn">
-              <i className="far fa-copy"></i>
-            </button>
-            <button className="generate-btn">
-              <i className="fas fa-sync-alt"></i>
-            </button>
+            <Button
+              className="copy-btn"
+              iconClass="far fa-copy"
+            />
+            <Button
+              className="generate-btn"
+              iconClass="fas fa-sync-alt"
+            />
           </div>
         </div>
       </div>
+      <Container />
     </Fragment>
   )
 }

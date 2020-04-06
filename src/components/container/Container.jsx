@@ -1,7 +1,15 @@
 import React from 'react';
 import './Container.css';
+import Button from '../button/Button';
 
 const Container = () => {
+
+  const btnProps = {
+    className: "btn password-btn",
+    label: "Copy Password",
+
+  }
+
   return (
     <div className="row password-settings">
       <h3>Use the slider and select from the options</h3>
@@ -22,7 +30,7 @@ const Container = () => {
       <div className="text-center">
         <div className="row">
           <div className="col-md-12">
-            <button className="btn password-btn">Copy Password</button>
+            <Button { ...btnProps } />
           </div>
         </div>
       </div>
