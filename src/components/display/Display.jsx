@@ -16,7 +16,7 @@ const Display = () => {
   let passwordDescription = '';
 
   const generateNewPassword = () => {
-    const pwd = generatePassword(passwordProps, rangeValue);
+    const pwd = rangeValue > 3 ? generatePassword(passwordProps, rangeValue) : generatePassword(passwordProps, 3);
     setPassword(pwd);
   }
 
@@ -95,6 +95,7 @@ const Display = () => {
         </div>
       </div>
       <Container 
+        type={type}
         setPassword={setPassword} 
         setRange={setRange} 
         setPasswordProps={setPasswordProps}

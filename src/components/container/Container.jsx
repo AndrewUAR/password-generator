@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './Container.css';
 import Button from '../button/Button';
 import Slider from '../slider/Slider';
@@ -33,7 +33,7 @@ const CHEKBOX_LIST = [
 ]
 
 const Container = props => {
-  const { setPassword, setRange, setPasswordProps, passwordRef } = props;
+  const { setPassword, setRange, setPasswordProps, passwordRef, type } = props;
   const [rangeValue, setRangeValue] = useState(12);
   const [checkbox, setCheckbox] = useState({
     uppercase: true,
@@ -43,6 +43,13 @@ const Container = props => {
   });
   const [checked, setChecked] = useState(false);
   const [checkedName, setCheckedName] = useState('');
+  const [minMaxValue, setMinMaxValue] = useState({
+    min: 1,
+    max: 60
+  });
+
+  const { uppercase, lowercase, symbols, numbers } = checkbox;
+  const { min, max } = minMaxValue;
 
   const checkBoxCount = () => {
     const checkedCount = Object.keys(checkbox).filter(key => checkbox[key]);
@@ -57,7 +64,57 @@ const Container = props => {
     }
   }
 
-  const { uppercase, lowercase, symbols, numbers } = checkbox;
+  
+  const updateCheckBoxes = () => {
+    if (type === 'pin') {
+      CHEKBOX_LIST.forEach(checkbox => {
+        const name = checkbox.name;
+        if (name !== 'numbers') {
+          checkbox.isChecked = false;
+          const checkboxProps = {
+            name,
+            checkedName: name,
+            checked: true,
+            isChecked: checkbox.isChecked,
+            min: 0,
+            max: 15,
+            length: 3
+          };
+          checkBoxProperties(checkboxProps);
+        }
+      })
+    } else {
+      CHEKBOX_LIST.forEach(checkbox => {
+        const name = checkbox.name;
+        checkbox.isChecked = true;
+        const checkboxProps = {
+          name,
+          checkedName: '',
+          checked: false,
+          isChecked: checkbox.isChecked,
+          min: 1,
+          max: 60,
+          length: 12
+        };
+        checkBoxProperties(checkboxProps);
+      })
+    }
+  }
+
+  const checkBoxProperties = checkBoxProps => {
+    const { name, checked, isChecked, checkedName, min, max, length} = checkBoxProps;
+
+    setCheckbox(prevState => ({
+      ...prevState,
+      [name]: isChecked
+    }))
+    setChecked(checked);
+    setCheckedName(checkedName);
+    setPasswordLength(length);
+    setMinMaxValue({ min, max });
+    setRange(length);
+    setRangeValue(length);
+  }
 
   useEffect(() => {
     setPasswordLength(rangeValue);
@@ -72,7 +129,7 @@ const Container = props => {
   
 
   const passwordGenerate = (checkbox, rangeValue) => {
-    const pwd = generatePassword(checkbox, rangeValue);
+    const pwd = rangeValue > 3 ? generatePassword(checkbox, rangeValue) : generatePassword(checkbox, 3);
     setPassword(pwd);
     setPasswordProps(checkbox, rangeValue);
   }
@@ -92,20 +149,21 @@ const Container = props => {
   }
 
   const onChangeCheckBox = e => {
-    let { name, checked } = e.target;
-    CHEKBOX_LIST.forEach(checkbox => {
-      if (checkbox.name === name) {
-        checkbox.isChecked = checked;
-        // setCheckbox({ [name]: checkbox.isChecked});
-        setCheckbox(prevState => ({
-          ...prevState,
-          [name]: checkbox.isChecked
-        }))
-        setPasswordLength(rangeValue);
-        setRangeValue(rangeValue);
-      }
-    });
-    console.log(CHEKBOX_LIST)
+    if (type !== 'pin') {
+      let { name, checked } = e.target;
+      CHEKBOX_LIST.forEach(checkbox => {
+        if (checkbox.name === name) {
+          checkbox.isChecked = checked;
+          // setCheckbox({ [name]: checkbox.isChecked});
+          setCheckbox(prevState => ({
+            ...prevState,
+            [name]: checkbox.isChecked
+          }))
+          setPasswordLength(rangeValue);
+          setRangeValue(rangeValue);
+        }
+      });
+    }
   }
 
   const copyClipBoard = elementRef => e => {
@@ -114,12 +172,20 @@ const Container = props => {
   }
 
   const sliderProps = {
-    min: 1,
-    max: 60,
+    min: min,
+    max: max,
     step: 1,
     value: parseInt(rangeValue, 10),
     defaultLength: parseInt(rangeValue, 10)
   }
+
+    // useMemo(() => {
+    //   updateCheckBoxes()
+    // }, [type]);
+
+    useEffect(() => {
+      updateCheckBoxes()}
+      , [type]);
 
   return (
     <div className="password-settings">

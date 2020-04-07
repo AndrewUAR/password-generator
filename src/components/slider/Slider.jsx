@@ -40,7 +40,6 @@ const Slider = props => {
           step={step}
           min={min}
           max={max}
-          defaultLength={defaultLength}
           value={value}
           onChange={handleChange(max)}
           style={styleInput}
@@ -57,7 +56,7 @@ Slider.propTypes = {
   max: PropTypes.number.isRequired,
   defaultLength: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChangeValue: PropTypes.func.isRequired
 }
 
 export default Slider

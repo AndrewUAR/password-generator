@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import Header from './header/Header';
+import Display from './display/Display';
 
 const Main = () => {
   return (
     <Fragment>
       <Header />
-      <h3>Display component</h3>
+      <Display />
     </Fragment>
   )
 }
