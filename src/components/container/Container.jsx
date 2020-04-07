@@ -1,38 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Container.css';
 import Button from '../button/Button';
 import Slider from '../slider/Slider';
 import Checkbox from '../checkbox/Checkbox';
+import { generatePassword, setPasswordLength } from '../utils/Helper';
 
 const CHEKBOX_LIST = [
   {
     id: 0,
     name: 'uppercase',
     label: 'Uppercase',
-    isChecked: 'true'
+    isChecked: true
   },
   {
     id: 1,
     name: 'lowercase',
     label: 'Lowercase',
-    isChecked: 'true'
+    isChecked: true
   },
   {
     id: 2,
     name: 'symbols',
     label: 'Symbols',
-    isChecked: 'true'
+    isChecked: true
   },
   {
     id: 3,
     name: 'numbers',
     label: 'Numbers',
-    isChecked: 'true'
+    isChecked: true
   }
 ]
 
-const Container = () => {
+const Container = props => {
+  const { setPassword, setRange, setPasswordProps } = props;
   const [rangeValue, setRangeValue] = useState(12);
+  const [checkbox, setCheckbox] = useState({
+    uppercase: true,
+    lowercase: true,
+    symbols: true,
+    numbers: true
+  })
+
+  const { uppercase, lowercase, symbols, numbers } = checkbox;
+
+  useEffect(() => {
+    setPasswordLength(rangeValue);
+    setRange(rangeValue);
+    passwordGenerate(checkbox, rangeValue);
+
+    // eslint-disable-next-line
+  }, [uppercase, lowercase, symbols, numbers]);
+
+  const passwordGenerate = (checkbox, rangeValue) => {
+    const pwd = generatePassword(checkbox, rangeValue);
+    setPassword(pwd);
+    setPasswordProps(checkbox, rangeValue);
+  }
 
   const btnProps = {
     className: "btn password-btn",
@@ -41,11 +65,22 @@ const Container = () => {
   }
 
   const onChangeSlider = e => {
-    setRangeValue(e.target.value);
+    const { value } = e.target
+    setRangeValue(value);
+    setPasswordLength(value);
+    setRange(value);
+    passwordGenerate(checkbox, value);
   }
 
   const onChangeCheckBox = e => {
-    console.log(e.target.value)
+    let { name, checked } = e.target;
+    CHEKBOX_LIST.forEach(checkbox => {
+      if (checkbox.name === name) {
+        checkbox.isChecked = checked;
+        setCheckbox({ [name]: checkbox.isChecked})
+      }
+    });
+    console.log(CHEKBOX_LIST)
   }
 
   const sliderProps = {
@@ -78,7 +113,7 @@ const Container = () => {
                   label={checkbox.label}
                   value={checkbox.isChecked}
                   onChange={onChangeCheckBox}
-                  disable={false}
+                  disabled={false}
                 />
             )}
           </div>
