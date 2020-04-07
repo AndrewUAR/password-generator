@@ -10,6 +10,7 @@ const Display = () => {
   const [rangeValue, setRange] = useState();
   const [passwordProps, setPasswordProps] = useState();
   const [tooltip, setTooltip] = useState(false);
+  const [type, setType] = useState('password');
   const passwordRef = useRef(null);
 
   let passwordDescription = '';
@@ -41,8 +42,24 @@ const Display = () => {
     }
   }
 
+  const onSelectTag = e => {
+    setType(e.target.value);
+  }
+
   return (
     <Fragment>
+      <div>
+        <select
+          name="type"
+          value={type}
+          onChange={onSelectTag}
+          className="form-control form-control-sm"
+          style={selectTagStyle}
+        >
+          <option value="password">Random Password</option>
+          <option value="pin">PIN</option>
+        </select>
+      </div>
       <div className="row">
         <div className="col-12 password-display-container" style={{ backgroundColor: setBackgroundColor(password)}}>
           <div style={{ width: '100%' }}>
@@ -85,6 +102,14 @@ const Display = () => {
       />
     </Fragment>
   )
+}
+
+const selectTagStyle = {
+  backgroundColor:'inherit',
+  color: '#506175',
+  width: '20%',
+  height: 'auto',
+  marginLeft: '-4px'
 }
 
 export default Display;
