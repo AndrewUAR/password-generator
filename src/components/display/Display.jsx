@@ -3,11 +3,13 @@ import './Display.css'
 import Container from '../container/Container';
 import Button from '../button/Button';
 import { generatePassword, copyToClipBoard } from '../utils/Helper';
+import Tooltip from '../tooltip/Tooltip';
 
 const Display = () => {
   const [password, setPassword] = useState('');
   const [rangeValue, setRange] = useState();
   const [passwordProps, setPasswordProps] = useState();
+  const [tooltip, setTooltip] = useState(false);
   const passwordRef = useRef(null);
 
   let passwordDescription = '';
@@ -19,7 +21,11 @@ const Display = () => {
 
   const copyClipBoard = e => {
     e.preventDefault();
-    copyToClipBoard(passwordRef.current)
+    copyToClipBoard(passwordRef.current);
+    setTooltip(true);
+    setTimeout(() => {
+      setTooltip(false);
+    }, 2000);
   }
 
   const setBackgroundColor = password => {
@@ -63,6 +69,11 @@ const Display = () => {
               iconClass="fas fa-sync-alt"
               handleClick={() => generateNewPassword()}
             />
+            <Tooltip 
+              message="Copied"
+              position="left"
+              displayTooltip={tooltip}
+              />
           </div>
         </div>
       </div>
@@ -70,6 +81,7 @@ const Display = () => {
         setPassword={setPassword} 
         setRange={setRange} 
         setPasswordProps={setPasswordProps}
+        passwordRef={passwordRef}
       />
     </Fragment>
   )
