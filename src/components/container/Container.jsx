@@ -3,7 +3,7 @@ import './Container.css';
 import Button from '../button/Button';
 import Slider from '../slider/Slider';
 import Checkbox from '../checkbox/Checkbox';
-import { generatePassword, setPasswordLength } from '../utils/Helper';
+import { generatePassword, setPasswordLength, copyToClipBoard } from '../utils/Helper';
 
 const CHEKBOX_LIST = [
   {
@@ -33,7 +33,7 @@ const CHEKBOX_LIST = [
 ]
 
 const Container = props => {
-  const { setPassword, setRange, setPasswordProps } = props;
+  const { setPassword, setRange, setPasswordProps, passwordRef } = props;
   const [rangeValue, setRangeValue] = useState(12);
   const [checkbox, setCheckbox] = useState({
     uppercase: true,
@@ -108,6 +108,11 @@ const Container = props => {
     console.log(CHEKBOX_LIST)
   }
 
+  const copyClipBoard = elementRef => e => {
+    e.preventDefault();
+    copyToClipBoard(elementRef);
+  }
+
   const sliderProps = {
     min: 1,
     max: 60,
@@ -151,7 +156,7 @@ const Container = props => {
       <div className="text-center">
         <div className="row">
           <div className="col-md-12">
-            <Button { ...btnProps } />
+            <Button { ...btnProps } handleClick={copyClipBoard(passwordRef.current)} />
           </div>
         </div>
       </div>
