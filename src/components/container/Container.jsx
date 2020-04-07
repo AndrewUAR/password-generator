@@ -40,7 +40,22 @@ const Container = props => {
     lowercase: true,
     symbols: true,
     numbers: true
-  })
+  });
+  const [checked, setChecked] = useState(false);
+  const [checkedName, setCheckedName] = useState('');
+
+  const checkBoxCount = () => {
+    const checkedCount = Object.keys(checkbox).filter(key => checkbox[key]);
+    const disabled = checkedCount.length === 1;
+    const name = checkedCount[0];
+    if (disabled) {
+      setChecked(disabled);
+      setCheckedName(name);
+    } else {
+      setChecked(false);
+      setCheckedName('');
+    }
+  }
 
   const { uppercase, lowercase, symbols, numbers } = checkbox;
 
@@ -49,8 +64,12 @@ const Container = props => {
     setRange(rangeValue);
     passwordGenerate(checkbox, rangeValue);
 
+    checkBoxCount();
+
     // eslint-disable-next-line
   }, [uppercase, lowercase, symbols, numbers]);
+
+  
 
   const passwordGenerate = (checkbox, rangeValue) => {
     const pwd = generatePassword(checkbox, rangeValue);
@@ -77,7 +96,13 @@ const Container = props => {
     CHEKBOX_LIST.forEach(checkbox => {
       if (checkbox.name === name) {
         checkbox.isChecked = checked;
-        setCheckbox({ [name]: checkbox.isChecked})
+        // setCheckbox({ [name]: checkbox.isChecked});
+        setCheckbox(prevState => ({
+          ...prevState,
+          [name]: checkbox.isChecked
+        }))
+        setPasswordLength(rangeValue);
+        setRangeValue(rangeValue);
       }
     });
     console.log(CHEKBOX_LIST)
@@ -113,7 +138,9 @@ const Container = props => {
                   label={checkbox.label}
                   value={checkbox.isChecked}
                   onChange={onChangeCheckBox}
-                  disabled={false}
+                  disabled={
+                    checked && checkbox.isChecked && checkedName === checkbox.name
+                  }
                 />
             )}
           </div>
