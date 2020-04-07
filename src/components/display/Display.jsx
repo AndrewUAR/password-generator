@@ -1,19 +1,25 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useRef } from 'react';
 import './Display.css'
 import Container from '../container/Container';
 import Button from '../button/Button';
-import { generatePassword } from '../utils/Helper';
+import { generatePassword, copyToClipBoard } from '../utils/Helper';
 
 const Display = () => {
   const [password, setPassword] = useState('');
   const [rangeValue, setRange] = useState();
   const [passwordProps, setPasswordProps] = useState();
+  const passwordRef = useRef(null);
 
   let passwordDescription = '';
 
   const generateNewPassword = () => {
     const pwd = generatePassword(passwordProps, rangeValue);
     setPassword(pwd);
+  }
+
+  const copyClipBoard = e => {
+    e.preventDefault();
+    copyToClipBoard(passwordRef.current)
   }
 
   const setBackgroundColor = password => {
@@ -35,7 +41,7 @@ const Display = () => {
         <div className="col-12 password-display-container" style={{ backgroundColor: setBackgroundColor(password)}}>
           <div style={{ width: '100%' }}>
             <div className="password-display">
-              <input type="text" className="password-display-input" value={password} readOnly/>
+              <input ref={passwordRef} type="text" className="password-display-input" value={password} readOnly/>
             </div>
             <div className="password-description">
               {
@@ -50,6 +56,7 @@ const Display = () => {
             <Button
               className="copy-btn"
               iconClass="far fa-copy"
+              handleClick={copyClipBoard}
             />
             <Button
               className="generate-btn"
